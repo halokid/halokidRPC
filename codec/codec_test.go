@@ -7,82 +7,39 @@ import (
 )
 
 const (
-  i = "Halokid data"
 )
 
 func TestByteCodec_Encode(t *testing.T) {
   bc := ByteCodec{}
+  i := "Halokid data"
   ib, err := bc.Encode([]byte(i))
   t.Log("ib: ", ib, "err: ", err)
 }
 
-
-
 func TestByteCodec_Decode(t *testing.T) {
-  //data := []byte("hello")
-  bc := &ByteCodec{}
-  //var ix interface{}
-  //ix = "a"
-  //err := bc.Decode(data, "a")
-  //t.Log("data:", data, "err:", err)
+  bc := ByteCodec{}
+  i := "Halokid data"
+  ibEn, err := bc.Encode([]byte(i))
+  t.Log("ibEn: ", ibEn, "err: ", err)
 
-  //reflect.ValueOf("a")
+  var iw interface{}    // todo: 声明一个类型，只是源码的定义
+  iw = new([]byte)      // todo: 实际的数据储存类型，是写进内存位的，runtime实际的类型
+  ibDeErr := bc.Decode(ibEn, iw)
+  t.Log("ibDeErr:", ibDeErr, " iw:", iw)
+}
 
-  //data := []byte{1, 2, 3, 4, 5, 6, 7, 8, 9, 0}
-  //data := []byte{}
-  //var data []byte
-  type Reply struct {
-    Greet      string
-  }
-  type XX struct {
-    reply    interface{}
-    //name     string
-  }
-  //xx := &XX{}
-  //reflect.Indirect(reflect.ValueOf("a")).SetBytes(data)
+func TestJsonCodec(t *testing.T) {
+  bc := JSONCodec{}
+  i := "Halokid data"
+  ibEn, err := bc.Encode(i)
+  t.Log("ibEn: ", ibEn, "err: ", err)
 
-  type Msg struct {
-    Payload      []byte
-  }
-  msg := &Msg{}
-  //msg.Payload = []byte{99, 88}
-  msg.Payload = []byte{123, 34, 71, 114, 101, 101, 116, 34, 58, 34, 228, 189, 160, 229, 165, 189, 32, 74, 105, 109, 109, 121, 34, 125}
+  var iw *interface{}    // todo: 声明一个类型，只是源码的定义
+  iw = new(interface{})   // todo: 实际的数据储存类型，是写进内存位的，runtime实际的类型
 
-  var xx *XX
-  xx = new(XX)
-  //xx.reply = []byte{1}
-  //reply := &Reply{}
-  var reply *Reply
-  reply = new(Reply)
-  reply.Greet = ""
-  xx.reply = reply
-
-  //buf := &bytes.Buffer{}
-  //err := binary.Read(buf, binary.BigEndian, &reply)
-  //xx.reply = buf.Bytes()
-
-  //buf := new(bytes.Buffer)
-  //if err := binary.Write(buf, binary.LittleEndian, reply); err != nil {
-  //  t.Log("error")
-  //}
-  //t.Log("buf.Bytes ------------", buf.Bytes())
-  //xx.reply = buf.Bytes()
-
-  //var iter interface{}
-  //iter = "yyyyyyyyyy"
-  //xx.reply = &iter
-  //xx.name = "zzzzzzzzz"
-  //data := []byte{99}
-  //err := bc.Decode(data, xx.reply)
-  //y := reflect.ValueOf(xx.reply)
-  //t.Log("y ---------", y)
-  t.Log("len data ---------", len(msg.Payload))
-  t.Logf("msg.payload --------- %+v, %+v", reflect.TypeOf(msg.Payload),  msg.Payload)
-  t.Logf("xx.reply --------- %+v, %+v", reflect.TypeOf(xx.reply), xx.reply)
-  err := bc.Decode(msg.Payload, xx.reply)
-
-  //err := reflect.ValueOf(msg.Payload)
-  t.Log(err)
+  //iw := new(interface{})   // todo: 或者直接new一块内存
+  ibDeErr := bc.Decode(ibEn, iw)
+  t.Log("ibDeErr:", ibDeErr, " iw:", *iw)
 }
 
 func TestComm(t *testing.T) {
