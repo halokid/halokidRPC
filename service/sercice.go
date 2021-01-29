@@ -23,19 +23,19 @@ type functionType struct {
   ReplyType  reflect.Type
 }
 
-type service struct {
-  name      string              // name of sercice
+type Service struct {
+  Name      string              // name of sercice
   // receiver of methods for the service, like new(service), a struct pointer
-  rcvr      reflect.Value
-  typ       reflect.Type        // type of the receiver
-  method    map[string]*methodType
-  function  map[string]*functionType
+  Rcvr      reflect.Value
+  Typ       reflect.Type        // type of the receiver
+  Method    map[string]*methodType
+  Function  map[string]*functionType
 }
 
-func (s *service) call(mtype *methodType, argv, replyv reflect.Value) error {
+func (s *Service) call(mtype *methodType, argv, replyv reflect.Value) error {
   function := mtype.method.Func
   // invoke the method, providing a new value for the reply
-  returnVal := function.Call([]reflect.Value{s.rcvr, argv, replyv})
+  returnVal := function.Call([]reflect.Value{s.Rcvr, argv, replyv})
   // the return val for the method is an error
   err := returnVal[0].Interface()
   if err != nil {    // invoke fail
@@ -56,13 +56,13 @@ func FoundMethods(typ reflect.Type) map[string]*methodType {
       continue
     }
     // todo: 省略一些methd的参数类型检查
-    argType := mtype.In(2)      // 第二个参数
+    argType := mtype.In(1)      // 第一个参数
     if !isExportedOrBuiltinType(argType) {
       log.Println(mname, "的参数类型不允许外部调用:", argType)
       continue
     }
 
-    replyType := mtype.In(3)
+    replyType := mtype.In(2)
     if replyType.Kind() != reflect.Ptr {
       log.Println(mname, "的返回参数不是一个指针:", replyType)
       continue
@@ -75,6 +75,10 @@ func FoundMethods(typ reflect.Type) map[string]*methodType {
     }
 
     methods[mname] = &methodType{method: method, ArgType: argType, ReplyType:  replyType}
+
+    // 把类型的定义放进pool共用, 避免重复声明
+    argsReplyPools.Init(argType)
+    argsReplyPools.Init(replyType)
   }
   return methods
 }

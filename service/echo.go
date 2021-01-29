@@ -1,7 +1,6 @@
 package service
 
 import (
-  "context"
   "log"
 )
 
@@ -15,8 +14,9 @@ type Reply struct {
   Greet   string
 }
 
-func (e *Echo) Say(ctx context.Context, args *Args, reply *Reply) error {
+func (e *Echo) Say(args *Args, reply *Reply) error {
   log.Printf("Echo Say args %+v ------------------ ", args)
+  reply.Greet = "hello"
   return nil
 }
 

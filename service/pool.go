@@ -36,3 +36,21 @@ func (p *typePools) Init(t reflect.Type) {
   defer p.mu.Unlock()
   p.pools[t] = tp
 }
+
+func (p *typePools) Put(t reflect.Type, x interface{}) {
+  p.mu.RLock()
+  pool := p.pools[t]
+  p.mu.RUnlock()
+  pool.Put(x)
+}
+
+func (p *typePools) Get(t reflect.Type) interface{} {
+  p.mu.RLock()
+  pool := p.pools[t]
+  p.mu.RUnlock()
+  return pool.Get()
+}
+
+
+
+
