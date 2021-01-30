@@ -32,7 +32,7 @@ type Service struct {
   Function  map[string]*functionType
 }
 
-func (s *Service) call(mtype *methodType, argv, replyv reflect.Value) error {
+func (s *Service) Call(mtype *methodType, argv, replyv reflect.Value) error {
   function := mtype.method.Func
   // invoke the method, providing a new value for the reply
   returnVal := function.Call([]reflect.Value{s.Rcvr, argv, replyv})
@@ -77,8 +77,8 @@ func FoundMethods(typ reflect.Type) map[string]*methodType {
     methods[mname] = &methodType{method: method, ArgType: argType, ReplyType:  replyType}
 
     // 把类型的定义放进pool共用, 避免重复声明
-    argsReplyPools.Init(argType)
-    argsReplyPools.Init(replyType)
+    ArgsReplyPools.Init(argType)
+    ArgsReplyPools.Init(replyType)
   }
   return methods
 }

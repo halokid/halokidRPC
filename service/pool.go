@@ -11,7 +11,7 @@ type typePools struct {
   New     func(t reflect.Type) interface{}
 }
 
-var argsReplyPools = &typePools{
+var ArgsReplyPools = &typePools{
   pools:   make(map[reflect.Type]*sync.Pool),
 
   New:     func(t reflect.Type) interface{} {

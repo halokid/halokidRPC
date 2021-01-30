@@ -15,8 +15,8 @@ type Reply struct {
 }
 
 func (e *Echo) Say(args *Args, reply *Reply) error {
-  log.Printf("Echo Say args %+v ------------------ ", args)
-  reply.Greet = "hello"
+  log.Printf("Echo Say args ------------------ %+v", args)
+  reply.Greet = args.Name
   return nil
 }
 

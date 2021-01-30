@@ -23,7 +23,7 @@ func TestCall(t *testing.T) {
 
   mtype := methods["Say"]
   t.Logf("mtype ---------------- %+v", mtype)
-  var argv = argsReplyPools.Get(mtype.ArgType)
+  var argv = ArgsReplyPools.Get(mtype.ArgType)
 
   payload := `{"name": "halokid"}`
   payloadB := []byte(payload)      // 客户端传过来的数据
@@ -32,7 +32,7 @@ func TestCall(t *testing.T) {
   t.Log("err -----------", err)
   t.Logf("argv ----------- %+v", argv)
 
-  replyv := argsReplyPools.Get(mtype.ReplyType)
+  replyv := ArgsReplyPools.Get(mtype.ReplyType)
   t.Logf("replyv ----------- %+v", replyv)
 
   s := &Service{}
@@ -40,15 +40,15 @@ func TestCall(t *testing.T) {
 
   if mtype.ArgType.Kind() != reflect.Ptr {
     // 如果method arg的类型不是指针
-    err = s.call(mtype, reflect.ValueOf(argv).Elem(), reflect.ValueOf(replyv))
+    err = s.Call(mtype, reflect.ValueOf(argv).Elem(), reflect.ValueOf(replyv))
   } else {
     // 如果method arg的类型是指针
-    err = s.call(mtype, reflect.ValueOf(argv), reflect.ValueOf(replyv))
+    err = s.Call(mtype, reflect.ValueOf(argv), reflect.ValueOf(replyv))
   }
 
   // 成功使用 argv, replyv之后， 放入pool复用
-  argsReplyPools.Put(mtype.ArgType, argv)
-  argsReplyPools.Put(mtype.ReplyType, replyv)
+  ArgsReplyPools.Put(mtype.ArgType, argv)
+  ArgsReplyPools.Put(mtype.ReplyType, replyv)
 
   t.Logf("replyv call after ------------- %+v, %+v", reflect.TypeOf(replyv), replyv)
   data, err := codecx.Encode(replyv)     // 服务端按照客户端的codec方式 encode 返回结果
