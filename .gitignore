@@ -1,1 +1,3 @@
 /.idea
+/cmd/rs_client/target
+/cmd/rs_client/.idea
